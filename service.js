@@ -44,7 +44,7 @@ client.on("message", (msg) => {
 
       case "h":
       case "homework":
-        if (content.length === 1) command.homework.viewHomeWork(msg);
+        if (content.length === 1) command.homework.viewHomeWork(msg, prefix);
         else if (content.length > 1 && content[1] === "add") {
           command.homework.addHomeWork(msg, prefix);
         }
