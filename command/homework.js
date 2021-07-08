@@ -61,7 +61,7 @@ module.exports.addHomeWork = (msg, prefix) => {
     writeFileHomeWork(homeWorkData);
 
     msg.react("👍🏻");
-    msg.channel.send(">>> Homework has been Added❗️");
+    msg.channel.send(">>> Homework has been Added✅");
   } else {
     msg.react("❌");
     msg.channel.send(
