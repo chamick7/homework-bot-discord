@@ -2,7 +2,6 @@ const fs = require("fs");
 const { connect } = require("http2");
 const moment = require("moment");
 
-
 module.exports.viewHomeWork = (msg, prefix) => {
   let homeWorkData = getHomeWork();
 
@@ -45,9 +44,6 @@ function getHomeWork() {
 
 module.exports.addHomeWork = (msg, prefix) => {
   const content = msg.content.substr(1).toLowerCase().split(" ");
-  console.log(content[3]);
-  console.log(moment("02/02/2021", "DD/MM/YYYY",true).isValid());
-
   //check msg have name and dueDate
   if (content.length === 4) {
     const homeWorkData = getHomeWork();
@@ -65,15 +61,54 @@ module.exports.addHomeWork = (msg, prefix) => {
   } else {
     msg.react("❌");
     msg.channel.send(
-      `>>> Add home work must be format -> **${prefix}homework add [homework] [due date]** `
+      `>>> Add homework must be format -> **${prefix}homework add [homework] [due date]** `
     );
   }
 };
 
 function writeFileHomeWork(data) {
-  fs.writeFileSync("storage/homework.json", JSON.stringify({homeWorkList: data}));
+  fs.writeFileSync("storage/homework.json", JSON.stringify({ homeWorkList: data }));
 }
 
 function genNewId() {
-  return Math.floor(100000 + Math.random() * 900000);
+  let randNum = Math.floor(100000 + Math.random() * 900000);
+  return randNum.toString();
 }
+
+module.exports.removeHomeWork = (msg, prefix) => {
+  const content = msg.content.substr(1).toLowerCase().split(" ");
+
+  if (content.length === 3) {
+    let needWriteFile = false;
+    let selectedHomeWork = {};
+    let reqInp = content[2].toLowerCase();
+    const homeworkData = getHomeWork();
+    const homeWorkForMap = homeworkData;
+
+    homeWorkForMap.map((hw, index) => {
+      if (hw.id.toLowerCase().indexOf(reqInp) > -1 || hw.name.toLowerCase().indexOf(reqInp) > -1 && reqInp.length >= 3) {
+        homeworkData.splice(index, 1);
+        selectedHomeWork = hw;
+        needWriteFile = true;
+      }
+    });
+
+    if (needWriteFile) {
+      writeFileHomeWork(homeworkData);
+      msg.react("👍🏻");
+      msg.channel.send(
+        `> Homework has been deleted ✂️\n 🚫 \t[${selectedHomeWork.id}]\t " ${
+          selectedHomeWork.name
+        } "\t ${moment(selectedHomeWork.dueDate, "DD/MM/YYYY").format("dddd DD MMMM YYYY")}`
+      );
+    } else {
+      msg.react("❌");
+      msg.channel.send(">>> Homework not found ⛔️");
+    }
+  } else {
+    msg.react("❌");
+    msg.channel.send(
+      `>>> Remove homework must be format -> **${prefix}homework remove [ID or Name]** `
+    );
+  }
+};

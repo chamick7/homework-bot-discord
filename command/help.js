@@ -19,6 +19,10 @@ const helpList = [
     {
         command: "homework add [homework] [due date]",
         info: "Add homework to list. due date must be dd/mm/yyyy [01/01/2000]"
+    },
+    {
+        command: "homework remove [ID or Name]",
+        info: "Remove homework from list."
     }
     
 ]

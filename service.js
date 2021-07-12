@@ -7,7 +7,7 @@ const command = require("./command");
 
 let prefix = "";
 
-client.login(process.env.CLIENT_BOT_KEY);
+client.login(process.env.CLIENT_BOT_TOKEN);
 
 client.on("ready", () => {
   console.log(`Logged in as ${client.user.tag}!`);
@@ -43,10 +43,13 @@ client.on("message", (msg) => {
         break;
 
       case "h":
+      case "hw":
       case "homework":
         if (content.length === 1) command.homework.viewHomeWork(msg, prefix);
         else if (content.length > 1 && content[1] === "add") {
           command.homework.addHomeWork(msg, prefix);
+        } else if (content.length > 1 && content[1] === "remove") {
+          command.homework.removeHomeWork(msg, prefix);
         }
         break;
     }
